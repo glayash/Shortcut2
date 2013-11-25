@@ -10,7 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-public class IntentModel {
+public class IntentUtil {
 	
 	/**
 	 * 起動用のインテントを生成します
@@ -35,9 +35,33 @@ public class IntentModel {
 		PackageManager pm = c.getPackageManager();
 		Intent bootIntent = generateBootIntent(activityInfo);
 		Bitmap shortcutIcon = iconFromPackageName(pm, activityInfo.packageName);
-		String shortcutName = labelFromPackageName(pm, activityInfo);
+		String shortcutName = labelFromPackageName(pm, activityInfo.packageName);
 		Intent shortcutIntent = generateShortcutIntent(bootIntent, shortcutName, shortcutIcon);
 		c.sendBroadcast(shortcutIntent);
+	}
+	
+	/**
+	 * パッケージ名からアプリケーション名を取得します
+	 * @param pm
+	 * @param packageName
+	 * @return
+	 * @throws NameNotFoundException
+	 */
+	public static String labelFromPackageName(PackageManager pm, String packageName)throws NameNotFoundException {
+		PackageInfo packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_META_DATA);
+		return pm.getApplicationLabel(packageInfo.applicationInfo).toString();
+	}
+	
+	/**
+	 * パッケージ名からアプリケーションアイコンを取得します
+	 * @param pm
+	 * @param packageName
+	 * @return
+	 * @throws NameNotFoundException
+	 */
+	public static Bitmap iconFromPackageName(PackageManager pm, String packageName) throws NameNotFoundException {
+		Drawable d = pm.getApplicationIcon(packageName);
+		return ((BitmapDrawable)d).getBitmap();
 	}
 	
 	private static Intent generateShortcutIntent(Intent intent, String name, Bitmap icon){
@@ -47,15 +71,5 @@ public class IntentModel {
 		i.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
 		i.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
 		return i;
-	}
-	
-	private static String labelFromPackageName(PackageManager pm, ActivityInfo activityInfo)throws NameNotFoundException {
-		PackageInfo packageInfo = pm.getPackageInfo(activityInfo.packageName, PackageManager.GET_META_DATA);
-		return pm.getApplicationLabel(packageInfo.applicationInfo).toString();
-	}
-	
-	private static Bitmap iconFromPackageName(PackageManager pm, String packageName) throws NameNotFoundException {
-		Drawable d = pm.getApplicationIcon(packageName);
-		return ((BitmapDrawable)d).getBitmap();
-	}
+	}	
 }

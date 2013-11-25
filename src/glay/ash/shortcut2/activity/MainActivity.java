@@ -1,7 +1,7 @@
 package glay.ash.shortcut2.activity;
 
 import static glay.ash.shortcut2.Constants.*;
-import glay.ash.shortcut2.IntentModel;
+import glay.ash.shortcut2.IntentUtil;
 import glay.ash.shortcut2.R;
 import glay.ash.shortcut2.fragment.ApplicationDetailFragment;
 import glay.ash.shortcut2.fragment.ApplicationDetailFragment.OnActivitySelectedListener;
@@ -74,7 +74,7 @@ public class MainActivity extends ActionBarActivity implements OnApplicationSele
 	@Override
 	public void onItemClicked(ActivityInfo activityInfo) {
 		try{
-			startActivity(IntentModel.generateBootIntent(activityInfo));
+			startActivity(IntentUtil.generateBootIntent(activityInfo));
 		}catch(Exception e){
 			Toast.makeText(this, activityInfo.name+" boot failure", Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
@@ -84,7 +84,7 @@ public class MainActivity extends ActionBarActivity implements OnApplicationSele
 	@Override
 	public void onItemLongClick(ActivityInfo activityInfo) {
 		try{
-			IntentModel.generateShortcut(this, activityInfo);
+			IntentUtil.generateShortcut(this, activityInfo);
 		}catch(Exception e){
 			Toast.makeText(this, activityInfo.name+" can't make shortcut", Toast.LENGTH_SHORT).show();
 			e.printStackTrace();

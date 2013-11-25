@@ -3,5 +3,6 @@
 
     <string name="app_name">Shortcut Generator</string>
     <string name="app_config">Config</string>
+    <string name="app_icon">Application Icon</string>
 
 </resources>

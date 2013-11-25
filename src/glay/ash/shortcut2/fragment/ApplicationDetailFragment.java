@@ -1,5 +1,7 @@
 package glay.ash.shortcut2.fragment;
 import static glay.ash.shortcut2.Constants.*;
+import glay.ash.shortcut2.IntentUtil;
+import glay.ash.shortcut2.R;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -78,20 +81,36 @@ public class ApplicationDetailFragment extends ListFragment implements OnItemLon
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		getListView().setOnItemLongClickListener(this);
+		
+		LayoutInflater inflater = LayoutInflater.from(getActivity());
+		PackageManager pm = getActivity().getPackageManager();
+		String packageName = getArguments().getString(BUNDLE_KEY_PACKAGE_NAME);
+		
+		View header = inflater.inflate(R.layout.list_header, null);
+		ImageView iv = (ImageView)header.findViewById(R.id.applicationIcon);
+		TextView tv = (TextView)header.findViewById(R.id.applicationLabel);
+		try {
+			tv.setText(IntentUtil.labelFromPackageName(pm, packageName));
+			iv.setImageBitmap(IntentUtil.iconFromPackageName(pm, packageName));
+			getListView().addHeaderView(header, null, false);
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		if (null != mListener) {
-			 mListener.onItemClicked((ActivityInfo) getListAdapter().getItem(position));
+
+			 mListener.onItemClicked((ActivityInfo) getListAdapter().getItem((int)id));
 		}
 	}
 	
 	@Override
-	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
 		if(mListener != null){
-			mListener.onItemLongClick((ActivityInfo) getListAdapter().getItem(position));
+			mListener.onItemLongClick((ActivityInfo) getListAdapter().getItem((int)id));
 		}
 		return true;
 	}
