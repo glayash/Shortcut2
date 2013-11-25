@@ -1,12 +1,12 @@
 package glay.ash.shortcut2.activity;
 
 import static glay.ash.shortcut2.Constants.*;
+import glay.ash.shortcut2.IntentModel;
 import glay.ash.shortcut2.R;
 import glay.ash.shortcut2.fragment.ApplicationDetailFragment;
 import glay.ash.shortcut2.fragment.ApplicationDetailFragment.OnActivitySelectedListener;
 import glay.ash.shortcut2.fragment.ApplicationListFragment;
 import glay.ash.shortcut2.fragment.ApplicationListFragment.OnApplicationSelectedListener;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
@@ -72,12 +72,9 @@ public class MainActivity extends ActionBarActivity implements OnApplicationSele
 	}
 
 	@Override
-	public void onActivitySelected(ActivityInfo activityInfo) {
-		Intent i = new Intent();
-		i.setClassName(activityInfo.packageName, activityInfo.name);
-		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	public void onItemClicked(ActivityInfo activityInfo) {
 		try{
-			startActivity(i);
+			startActivity(IntentModel.generateBootIntent(activityInfo));
 		}catch(Exception e){
 			Toast.makeText(this, activityInfo.name+" boot failure", Toast.LENGTH_SHORT).show();
 			e.printStackTrace();
@@ -85,10 +82,21 @@ public class MainActivity extends ActionBarActivity implements OnApplicationSele
 	}
 	
 	@Override
-	public void onPackageNotFound() {
-		popFragment();
+	public void onItemLongClick(ActivityInfo activityInfo) {
+		try{
+			IntentModel.generateShortcut(this, activityInfo);
+		}catch(Exception e){
+			Toast.makeText(this, activityInfo.name+" can't make shortcut", Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
 	}
 	
+	@Override
+	public void onPackageNotFound(String packageName) {
+		Toast.makeText(this, packageName+" not found", Toast.LENGTH_SHORT).show();
+		popFragment();
+	}
+
 	private void popFragment(){
 		FragmentManager fm = getSupportFragmentManager();
 		fm.popBackStack();

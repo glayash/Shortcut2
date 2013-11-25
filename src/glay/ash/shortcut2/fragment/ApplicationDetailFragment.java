@@ -18,21 +18,18 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class ApplicationDetailFragment extends ListFragment {
+public class ApplicationDetailFragment extends ListFragment implements OnItemLongClickListener{
 
 	private OnActivitySelectedListener mListener;
 
 	public ApplicationDetailFragment() {
 		// Required empty public constructor
-	}
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 	}
 
 	@Override
@@ -64,7 +61,7 @@ public class ApplicationDetailFragment extends ListFragment {
 		} catch (NameNotFoundException e) {
 			
 			if(mListener != null){
-				mListener.onPackageNotFound();
+				mListener.onPackageNotFound(getArguments().getString(BUNDLE_KEY_PACKAGE_NAME));
 			}
 			
 			e.printStackTrace();
@@ -76,13 +73,27 @@ public class ApplicationDetailFragment extends ListFragment {
 		super.onDetach();
 		mListener = null;
 	}
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		getListView().setOnItemLongClickListener(this);
+	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		if (null != mListener) {
-			 mListener.onActivitySelected((ActivityInfo) getListAdapter().getItem(position));
+			 mListener.onItemClicked((ActivityInfo) getListAdapter().getItem(position));
 		}
+	}
+	
+	@Override
+	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+		if(mListener != null){
+			mListener.onItemLongClick((ActivityInfo) getListAdapter().getItem(position));
+		}
+		return true;
 	}
 	
 	private static class ActivityListAdapter extends BaseAdapter{
@@ -135,9 +146,9 @@ public class ApplicationDetailFragment extends ListFragment {
 	}
 	
 	public interface OnActivitySelectedListener {
-		public void onActivitySelected(ActivityInfo activityInfo);
-		
-		public void onPackageNotFound();
+		public void onItemClicked(ActivityInfo activityInfo);
+		public void onItemLongClick(ActivityInfo activityInfo);
+		public void onPackageNotFound(String packageName);
 	}
 
 }
