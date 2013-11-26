@@ -125,7 +125,7 @@ public class CreateShortcutActivity extends ActionBarActivity implements OnClick
 			return PackageUtils.labelFromPackageName(getPackageManager(), packageName);
 		case R.id.activityNameLabel:
 		default:
-			return activityName;
+			return activityLabel;
 		}
 	}
 
