@@ -1,17 +1,15 @@
 package glay.ash.shortcut2.fragment;
 import static glay.ash.shortcut2.Constants.*;
-import glay.ash.shortcut2.IntentUtil;
+import glay.ash.shortcut2.PackageUtils;
 import glay.ash.shortcut2.R;
+import glay.ash.shortcut2.Settings;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Color;
@@ -29,7 +27,7 @@ import android.widget.TextView;
 
 public class ApplicationDetailFragment extends ListFragment implements OnItemLongClickListener{
 
-	private OnActivitySelectedListener mListener;
+	private OnActivityListItemClickListener mListener;
 
 	public ApplicationDetailFragment() {
 		// Required empty public constructor
@@ -39,35 +37,8 @@ public class ApplicationDetailFragment extends ListFragment implements OnItemLon
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
-		if(activity instanceof OnActivitySelectedListener){
-			mListener = (OnActivitySelectedListener) activity;
-		}
-		
-		Context c = activity.getApplicationContext();
-		PackageManager pm = c.getPackageManager();
-		try {
-			PackageInfo info = pm.getPackageInfo(getArguments().getString(BUNDLE_KEY_PACKAGE_NAME), PackageManager.GET_ACTIVITIES);
-			
-			List<ActivityInfo> infos = Arrays.asList(info.activities);
-			Collections.sort(infos, new Comparator<ActivityInfo>() {
-				@Override
-				public int compare(ActivityInfo lhs, ActivityInfo rhs) {
-					if(lhs.exported ^ rhs.exported){
-						return lhs.exported ? -1 : 1;
-					}else{
-						return lhs.name.compareTo(rhs.name);						
-					}
-				}
-			});
-			
-			setListAdapter(new ActivityListAdapter(infos, c));
-		} catch (NameNotFoundException e) {
-			
-			if(mListener != null){
-				mListener.onPackageNotFound(getArguments().getString(BUNDLE_KEY_PACKAGE_NAME));
-			}
-			
-			e.printStackTrace();
+		if(activity instanceof OnActivityListItemClickListener){
+			mListener = (OnActivityListItemClickListener) activity;
 		}
 	}			
 
@@ -82,35 +53,60 @@ public class ApplicationDetailFragment extends ListFragment implements OnItemLon
 		super.onViewCreated(view, savedInstanceState);
 		getListView().setOnItemLongClickListener(this);
 		
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		PackageManager pm = getActivity().getPackageManager();
-		String packageName = getArguments().getString(BUNDLE_KEY_PACKAGE_NAME);
+		String packageName = getArguments().getString(PACKAGE_NAME_KEY);
+		//TODO:設定から変更可能にする
+//		boolean canExportedOnly = getArguments().getBoolean(CAN_EXPORTED_ONLY, true);
+		boolean canExportedOnly = Settings.canExportedOnly;
+		
+		if(packageName == null && mListener != null){
+			mListener.onPackageNotFound("null");
+			return;
+		}
+		
+		try{
+			getListView().addHeaderView(inflateHeaderView(getActivity(), packageName), null, false);
+			setListAdapter(new ActivityListAdapter(PackageUtils.generateActivitiesList(getActivity(), packageName, canExportedOnly), getActivity()));
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+			if(mListener != null){
+				mListener.onPackageNotFound(packageName);
+			}			
+		} catch (ActivityNotFoundException e){
+			e.printStackTrace();
+			if(mListener != null){
+				mListener.onActivitiesNotFound(packageName);
+			}
+		}
+	}
+	
+	private View inflateHeaderView(Context context, String packageName) throws NameNotFoundException{
+		LayoutInflater inflater = LayoutInflater.from(context);
+		PackageManager pm = context.getPackageManager();
 		
 		View header = inflater.inflate(R.layout.list_header, null);
 		ImageView iv = (ImageView)header.findViewById(R.id.applicationIcon);
-		TextView tv = (TextView)header.findViewById(R.id.applicationLabel);
-		try {
-			tv.setText(IntentUtil.labelFromPackageName(pm, packageName));
-			iv.setImageBitmap(IntentUtil.iconFromPackageName(pm, packageName));
-			getListView().addHeaderView(header, null, false);
-		} catch (NameNotFoundException e) {
-			e.printStackTrace();
-		}
+		TextView tv1 = (TextView)header.findViewById(R.id.applicationLabel);
+		TextView tv2 = (TextView)header.findViewById(R.id.packageNameLabel);
+
+		tv1.setText(PackageUtils.labelFromPackageName(pm, packageName));
+		tv2.setText(packageName);
+		iv.setImageBitmap(PackageUtils.iconFromPackageName(pm, packageName));
+		
+		return header;
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		if (null != mListener) {
-
-			 mListener.onItemClicked((ActivityInfo) getListAdapter().getItem((int)id));
+			 mListener.onActivityItemClick((ActivityInfo) getListAdapter().getItem((int)id));
 		}
 	}
 	
 	@Override
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long id) {
 		if(mListener != null){
-			mListener.onItemLongClick((ActivityInfo) getListAdapter().getItem((int)id));
+			mListener.onActivityItemLongClick((ActivityInfo) getListAdapter().getItem((int)id));
 		}
 		return true;
 	}
@@ -164,10 +160,33 @@ public class ApplicationDetailFragment extends ListFragment implements OnItemLon
 		
 	}
 	
-	public interface OnActivitySelectedListener {
-		public void onItemClicked(ActivityInfo activityInfo);
-		public void onItemLongClick(ActivityInfo activityInfo);
+	/**
+	 * Activity一覧のアイテムを選択した際に呼び出されるリスナ
+	 */
+	public interface OnActivityListItemClickListener {
+		/**
+		 * アイテムをタップした際に呼び出されます
+		 * @param activityInfo
+		 */
+		public void onActivityItemClick(ActivityInfo activityInfo);
+		
+		/**
+		 * アイテムをロングタップした際に呼び出されます
+		 * @param activityInfo
+		 */
+		public void onActivityItemLongClick(ActivityInfo activityInfo);
+		
+		/**
+		 * 指定したパッケージ情報が存在しない際に呼び出されます
+		 * @param packageName
+		 */
 		public void onPackageNotFound(String packageName);
+		
+		/**
+		 * 指定したパッケージがActivityを持たない時に呼び出されます。
+		 * @param packageName
+		 */
+		public void onActivitiesNotFound(String packageName);
 	}
 
 }

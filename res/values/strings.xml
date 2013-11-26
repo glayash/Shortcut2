@@ -4,5 +4,15 @@
     <string name="app_name">Shortcut Generator</string>
     <string name="app_config">Config</string>
     <string name="app_icon">Application Icon</string>
+    <string name="title_activity_create_shortcut">ショートカットの作成</string>
+    
+    <string name="acs_title_name_label">ショートカット名</string>
+    <string name="acs_title_icon_select">アイコン選択</string>
+    <string name="acs_radiobutton_dummy">Dummy</string>
+    <string name="acs_radiobutton_custom_hint">任意の名前を入力</string>
+    <string name="acs_icon_select_hint">お好みの画像をアイコンとして設定することができます（未実装）。</string>
+    <string name="acs_icon_reset_button">元に戻す</string>
+    <string name="acs_icon_launch_button">起動</string>
+    <string name="acs_icon_create_button">ショートカット\n作成</string>
 
 </resources>

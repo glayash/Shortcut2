@@ -1,0 +1,164 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6E6E6"
+    tools:context=".CreateShortcutActivity" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_vertical_margin" >
+
+        <RelativeLayout
+            android:id="@+id/iconSelectSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:background="@drawable/cardlike"
+            android:padding="@dimen/standard_padding" >
+
+            <TextView
+                android:id="@+id/iconHeader"
+                style="@style/HeaderText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="@string/acs_title_icon_select" />
+
+            <ImageView
+                android:id="@+id/iconButton"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_alignLeft="@+id/iconHeader"
+                android:layout_below="@+id/iconHeader"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginLeft="@dimen/standard_padding"
+                android:layout_marginTop="@dimen/standard_padding"
+                android:contentDescription="@string/acs_title_icon_select" />
+
+            <TextView
+                android:id="@+id/iconButtonHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/iconButton"
+                android:layout_marginLeft="@dimen/standard_padding"
+                android:layout_toRightOf="@+id/iconButton"
+                android:text="@string/acs_icon_select_hint"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#666666" />
+
+            <Button
+                android:id="@+id/iconResetButton"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/iconButtonHint"
+                android:text="@string/acs_icon_reset_button" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/labelSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/iconSelectSection"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:background="@drawable/cardlike"
+            android:padding="@dimen/standard_padding" >
+
+            <RadioGroup
+                android:id="@+id/radioGroupName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/nameHeader"
+                    style="@style/HeaderText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/standard_padding"
+                    android:text="@string/acs_title_name_label" />
+
+                <RadioButton
+                    android:id="@+id/applicationNameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/acs_radiobutton_dummy" />
+
+                <RadioButton
+                    android:id="@+id/activityNameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/acs_radiobutton_dummy" />
+
+                <RadioButton
+                    android:id="@+id/customLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/editTextCustomLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/radioGroupName"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="32dp"
+                android:ems="10"
+                android:hint="@string/acs_radiobutton_custom_hint"
+                android:imeOptions="actionDone"
+                android:inputType="text" >
+            </EditText>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/labelSection"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/labelSection"
+            android:background="@drawable/cardlike"
+            android:padding="4dp" >
+
+            <TextView
+                android:id="@+id/actionLaunch"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="@string/acs_icon_launch_button"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:background="?android:attr/selectableItemBackground"
+                android:textColor="#636363" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="#33000000" />
+
+            <TextView
+                android:id="@+id/createShortcut"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="4dp"
+                android:text="@string/acs_icon_create_button"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:background="?android:attr/selectableItemBackground"
+                android:textColor="#636363" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</ScrollView>

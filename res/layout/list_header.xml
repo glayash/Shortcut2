@@ -9,23 +9,35 @@
         android:id="@+id/applicationIcon"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginRight="8dp"
         android:contentDescription="@string/app_icon" />
 
-    <TextView
-        android:id="@+id/applicationLabel"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/applicationIcon"
-        android:gravity="center|left"
-        android:textColor="#787878"
-        android:shadowColor="#33FFFFFF"
-        android:shadowRadius="12.0"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/applicationLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-4dp"
+            android:shadowColor="#33FFFFFF"
+            android:shadowRadius="12.0"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#999999" />
+
+        <TextView
+            android:id="@+id/packageNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-4dp"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
 
 </RelativeLayout>
