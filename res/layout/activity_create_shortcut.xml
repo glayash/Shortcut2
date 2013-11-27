@@ -156,8 +156,7 @@
                 android:padding="4dp"
                 android:text="@string/acs_icon_create_button"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:background="@android:drawable/list_selector_background"
-                android:textColor="#636363" />
+                style="@style/SelectableView" />
         </LinearLayout>
     </RelativeLayout>
 
